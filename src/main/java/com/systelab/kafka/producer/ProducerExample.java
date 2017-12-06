@@ -18,9 +18,9 @@ public class ProducerExample {
         configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         configProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-        configProperties.put(ProducerConfig.BATCH_SIZE_CONFIG,"16384");
-        configProperties.put(ProducerConfig.LINGER_MS_CONFIG,"2000");
-        configProperties.put(ProducerConfig.ACKS_CONFIG,"1"); //Leader acknowledgement
+        configProperties.put(ProducerConfig.BATCH_SIZE_CONFIG, "16384");
+        configProperties.put(ProducerConfig.LINGER_MS_CONFIG, "2000");
+        configProperties.put(ProducerConfig.ACKS_CONFIG, "1"); //Leader acknowledgement
         return configProperties;
     }
 
@@ -28,7 +28,11 @@ public class ProducerExample {
         ProducerRecord<String, String> rec = new ProducerRecord<String, String>(ProducerExample.TOPIC, null, patient.toJSON());
         producer.send(rec, new Callback() {
             public void onCompletion(RecordMetadata metadata, Exception exception) {
-                logger.info("Message sent to topic->" + metadata.topic() + ", partition->" + metadata.partition() + " stored at offset->" + metadata.offset());
+                if (exception != null) {
+                    logger.error("Error producing topic " + metadata.topic()+".",exception);
+                } else {
+                    logger.info("Message sent to topic->" + metadata.topic() + ", partition->" + metadata.partition() + " stored at offset->" + metadata.offset());
+                }
             }
         });
     }
@@ -41,14 +45,21 @@ public class ProducerExample {
     }
 
     public void produce() {
-        Producer producer = new KafkaProducer(getKafkaProperties());
-        send(producer);
+        Producer producer = null;
         try {
-            Thread.sleep(50000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            producer = new KafkaProducer(getKafkaProperties());
+            send(producer);
+            try {
+                Thread.sleep(50000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception exception) {
+            logger.error("Error producing messages",exception);
+        } finally {
+            if (producer != null)
+                producer.close();
         }
-        producer.close();
     }
 
     public static void main(String[] argv) throws Exception {

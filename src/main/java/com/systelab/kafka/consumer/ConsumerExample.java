@@ -5,6 +5,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.Properties;
@@ -12,13 +14,15 @@ import java.util.Scanner;
 
 
 public class ConsumerExample {
+
+    private static final Logger logger = LogManager.getLogger(ConsumerExample.class);
+
     public static String TOPIC = "modulab";
     public static String GROUP = "21";
 
-
     public static void main(String[] argv) throws Exception {
 
-        Scanner in= new Scanner(System.in);
+        Scanner in = new Scanner(System.in);
         ConsumerThread consumerRunnable = new ConsumerThread(ConsumerExample.TOPIC, ConsumerExample.GROUP);
         consumerRunnable.start();
         String line = "";
@@ -26,7 +30,7 @@ public class ConsumerExample {
             line = in.next();
         }
         consumerRunnable.getKafkaConsumer().wakeup();
-        System.out.println("Stopping consumer .....");
+        logger.info("Stopping consumer ...");
         consumerRunnable.join();
     }
 
@@ -51,18 +55,16 @@ public class ConsumerExample {
             //Figure out where to start processing messages from
             kafkaConsumer = new KafkaConsumer<String, String>(configProperties);
             kafkaConsumer.subscribe(Arrays.asList(topicName));
-            //Start processing messages
             try {
                 while (true) {
                     ConsumerRecords<String, String> records = kafkaConsumer.poll(100);
                     for (ConsumerRecord<String, String> record : records)
-                        System.out.println("Message partition->" + record.partition() + " stored at offset->" + record.offset() + ": " + record.value());
+                        logger.info("Message partition->" + record.partition() + " stored at offset->" + record.offset() + ": " + record.value());
                 }
             } catch (WakeupException ex) {
-                System.out.println("Exception caught " + ex.getMessage());
+                logger.error("Exception caught", ex);
             } finally {
                 kafkaConsumer.close();
-                System.out.println("After closing KafkaConsumer");
             }
         }
 
