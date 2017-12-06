@@ -18,9 +18,9 @@ public class ProducerExample {
         configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         configProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-        configProperties.put(ProducerConfig.BATCH_SIZE_CONFIG,16384);
-        configProperties.put(ProducerConfig.LINGER_MS_CONFIG,2000);
-        configProperties.put(ProducerConfig.ACKS_CONFIG,1); //Leader acknowledgement
+        configProperties.put(ProducerConfig.BATCH_SIZE_CONFIG,"16384");
+        configProperties.put(ProducerConfig.LINGER_MS_CONFIG,"2000");
+        configProperties.put(ProducerConfig.ACKS_CONFIG,"1"); //Leader acknowledgement
         return configProperties;
     }
 
