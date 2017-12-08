@@ -14,7 +14,7 @@ public class ConsumerExample {
     private static final Logger logger = LogManager.getLogger(ConsumerExample.class);
 
     public static String TOPIC = "modulab";
-    public static String GROUP = "21";
+    public static String GROUP = "group:high";
 
     protected Properties getKafkaProperties(String groupId) {
         Properties configProperties = new Properties();
@@ -25,8 +25,10 @@ public class ConsumerExample {
         configProperties.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, 5000); //default value
         configProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest"); //default value. Other: earliest and none
 
-        configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-        configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, "simple");
+        if (groupId!=null && !groupId.equals("")) {
+            configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+            configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, "id:1");
+        }
         return configProperties;
     }
 
