@@ -2,13 +2,6 @@
 
 Simple producers and consumers for Apache Kafka
 
-## Working with the repo
-
-```bash
-git clone https://github.com/alfonsserra/kafka-test.git
-cd kafka-test
-mvn compile assembly:single
-```
 ## Getting Started
 
 1.  Visit the [Apache Kafka download page][kafka] to install the most recent version (1.0.0 as of this writing).
@@ -27,3 +20,11 @@ bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 -
 ```
 
 [kafka]: http://kafka.apache.org/downloads.html
+
+## Working with the repo
+
+```bash
+git clone https://github.com/alfonsserra/kafka-test.git
+cd kafka-test
+mvn compile assembly:single
+```
