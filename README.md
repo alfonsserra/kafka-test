@@ -18,7 +18,7 @@ Run zookeeper and Apache ZooKeeper and Kafka:
 bin/zookeeper-server-start.sh config/zookeeper.properties
 bin/kafka-server-start.sh config/server.properties
 ```
-Create a test topic to use for testing
+Create a test topic to use for testing:
 
 ```bash
 bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic modulab
