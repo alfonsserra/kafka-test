@@ -2,29 +2,31 @@ package com.systelab.kafka.model;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
+import java.io.StringReader;
 
 public class Patient {
-    Long id;
+    String id;
     String name;
     String surname;
     String country;
 
-    public Patient(Long id) {
+    public Patient(String id) {
         this.id = id;
     }
 
-    public Patient(Long id, String name, String surname, String country) {
+    public Patient(String id, String name, String surname, String country) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.country = country;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -61,5 +63,26 @@ public class Patient {
         return json.toString();
     }
 
+    public static Patient fromJSON(String s) {
+        JsonReader reader = Json.createReader(new StringReader(s));
+        JsonObject object = reader.readObject();
+        reader.close();
+
+        Patient patient = new Patient(object.getString("id"));
+        patient.setName(object.getString("name"));
+        patient.setSurname(object.getString("surname"));
+        patient.setCountry(object.getString("country"));
+        return patient;
+    }
+
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", country='" + country + '\'' +
+                '}';
+    }
 
 }

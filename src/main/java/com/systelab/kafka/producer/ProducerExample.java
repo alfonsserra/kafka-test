@@ -39,7 +39,7 @@ public class ProducerExample {
 
     protected void send(Producer producer) {
         for (int i = 0; i < 1000; i++) {
-            Patient patient = new Patient(new Long(i), "Peter", "Caramaro", i % 2 == 0 ? "USA" : "India");
+            Patient patient = new Patient(Integer.toString(i), "Peter", "Caramaro", i % 2 == 0 ? "USA" : "India");
             send(producer, patient);
         }
     }

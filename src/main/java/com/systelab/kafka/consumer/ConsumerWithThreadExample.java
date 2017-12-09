@@ -1,6 +1,5 @@
 package com.systelab.kafka.consumer;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
@@ -17,15 +16,14 @@ public class ConsumerWithThreadExample extends ConsumerExample {
         private KafkaConsumer<String, String> consumer;
 
         public ConsumerThread() {
+            consumer = getKafkaConsummer(ConsumerExample.TOPIC, ConsumerExample.GROUP);
         }
 
         public void run() {
-            consumer = getKafkaConsummer(ConsumerExample.TOPIC, ConsumerExample.GROUP);
             try {
                 while (true) {
                     ConsumerRecords<String, String> records = consumer.poll(100);
-                    for (ConsumerRecord<String, String> record : records)
-                        logger.info("Message partition->" + record.partition() + " stored at offset->" + record.offset() + ": " + record.value());
+                    consume(records);
                 }
             } catch (WakeupException ex) {
                 logger.error("Wakeup requested");
@@ -36,11 +34,6 @@ public class ConsumerWithThreadExample extends ConsumerExample {
 
         public void wakeup() {
             consumer.wakeup();
-
-        }
-
-        public KafkaConsumer<String, String> getKafkaConsumer() {
-            return this.consumer;
         }
     }
 

@@ -1,7 +1,8 @@
 package com.systelab.kafka.consumer;
 
+import com.systelab.kafka.model.Patient;
 import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -46,13 +47,20 @@ public class ConsumerExample {
         return consumer;
     }
 
+    protected void consume(ConsumerRecords<String, String> records) {
+        for (ConsumerRecord<String, String> record : records) {
+            logger.info("Message partition->" + record.partition() + " stored at offset->" + record.offset() + ": " + record.value());
+            Patient patient= Patient.fromJSON(record.value());
+            logger.info(patient);
+        }
+    }
+
     public void consume() {
         KafkaConsumer<String, String> consumer = getKafkaConsummer(ConsumerExample.TOPIC, ConsumerExample.GROUP);
         try {
             while (true) {
                 ConsumerRecords<String, String> records = consumer.poll(100);
-                for (ConsumerRecord<String, String> record : records)
-                    logger.info("Message partition->" + record.partition() + " stored at offset->" + record.offset() + ": " + record.value());
+                consume(records);
             }
         } catch (Exception ex) {
             logger.error("Exception caught", ex);
